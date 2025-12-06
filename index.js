@@ -3,6 +3,11 @@ const API_URL = 'https://api.themoviedb.org/3/search/movie';
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
 let favorites = [];
+let userId = localStorage.getItem('userId');
+if (!userId) {
+    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('userId', userId);
+}
 
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
@@ -14,12 +19,16 @@ const typeFilter = document.getElementById('typeFilter');
 // Load favorites from Firebase
 async function loadFavorites() {
     try {
-        const doc = await db.collection('users').doc(userId).get();
-        if (doc.exists) {
-            favorites = doc.data().favorites || [];
+        if (typeof db !== 'undefined') {
+            const doc = await db.collection('users').doc(userId).get();
+            if (doc.exists) {
+                favorites = doc.data().favorites || [];
+            }
+        } else {
+            throw new Error('Firebase not loaded');
         }
     } catch (error) {
-        console.log('Loading from localStorage as fallback');
+        console.log('Loading from localStorage as fallback:', error);
         favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     }
     displayFavorites();
@@ -28,10 +37,12 @@ async function loadFavorites() {
 // Save favorites to Firebase
 async function saveFavorites() {
     try {
-        await db.collection('users').doc(userId).set({
-            favorites: favorites,
-            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        if (typeof db !== 'undefined') {
+            await db.collection('users').doc(userId).set({
+                favorites: favorites,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        }
         localStorage.setItem('favorites', JSON.stringify(favorites));
     } catch (error) {
         console.error('Error saving to Firebase:', error);
@@ -225,8 +236,13 @@ function displaySyncCode() {
 function copySyncCode() {
     const syncCode = document.getElementById('syncCode');
     syncCode.select();
-    document.execCommand('copy');
-    alert('Sync code copied! Paste it on your other device.');
+    syncCode.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(syncCode.value).then(() => {
+        alert('Sync code copied! Paste it on your other device.');
+    }).catch(() => {
+        document.execCommand('copy');
+        alert('Sync code copied! Paste it on your other device.');
+    });
 }
 
 async function applySyncCode() {
@@ -237,11 +253,13 @@ async function applySyncCode() {
     }
     
     localStorage.setItem('userId', newUserId);
-    window.userId = newUserId;
+    userId = newUserId;
     await loadFavorites();
     alert('Synced! Your favorites are now shared across devices.');
     location.reload();
 }
 
 // Initialize app
-loadFavorites();
+setTimeout(() => {
+    loadFavorites();
+}, 500);
