@@ -33,6 +33,7 @@
         <div class="tabs">
             <button class="tab-btn active" data-tab="results">Search Results</button>
             <button class="tab-btn" data-tab="favorites">Favorites</button>
+            <button class="tab-btn" data-tab="sync">⚙️ Sync</button>
         </div>
         <div id="results" class="movies-grid tab-content active"></div>
         <div id="favorites" class="tab-content">
@@ -48,6 +49,23 @@
                 <option value="Other">Other</option>
             </select>
             <div id="favoritesGrid" class="movies-grid"></div>
+        </div>
+        <div id="sync" class="tab-content">
+            <div class="sync-container">
+                <h2>Sync Across Devices</h2>
+                <div class="sync-section">
+                    <h3>Your Sync Code:</h3>
+                    <input type="text" id="syncCode" readonly>
+                    <button class="button" onclick="copySyncCode()">Copy Code</button>
+                    <p class="sync-info">Copy this code and paste it on your other devices to sync favorites</p>
+                </div>
+                <div class="sync-section">
+                    <h3>Enter Sync Code:</h3>
+                    <input type="text" id="enterSyncCode" placeholder="Paste sync code here">
+                    <button class="button" onclick="applySyncCode()">Sync Now</button>
+                    <p class="sync-info">Paste the code from your other device to sync favorites</p>
+                </div>
+            </div>
         </div>
     </div>
     <script src="index.js"></script>

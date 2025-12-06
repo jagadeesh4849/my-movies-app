@@ -63,6 +63,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
             tabElement.classList.add('active');
         }
         if (tabId === 'favorites') displayFavorites();
+        if (tabId === 'sync') displaySyncCode();
     });
 });
 
@@ -215,6 +216,31 @@ function displayFavorites() {
         return;
     }
     displayMovies(filtered, favoritesDiv);
+}
+
+function displaySyncCode() {
+    document.getElementById('syncCode').value = userId;
+}
+
+function copySyncCode() {
+    const syncCode = document.getElementById('syncCode');
+    syncCode.select();
+    document.execCommand('copy');
+    alert('Sync code copied! Paste it on your other device.');
+}
+
+async function applySyncCode() {
+    const newUserId = document.getElementById('enterSyncCode').value.trim();
+    if (!newUserId) {
+        alert('Please enter a sync code');
+        return;
+    }
+    
+    localStorage.setItem('userId', newUserId);
+    window.userId = newUserId;
+    await loadFavorites();
+    alert('Synced! Your favorites are now shared across devices.');
+    location.reload();
 }
 
 // Initialize app

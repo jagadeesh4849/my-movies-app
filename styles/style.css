@@ -409,6 +409,52 @@ body {
     opacity: 1;
 }
 
+.sync-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.sync-container h2 {
+    text-align: center;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+.sync-section {
+    background: #2a2a2a;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.sync-section h3 {
+    color: #01b4e4;
+    margin-top: 0;
+}
+
+.sync-section input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #01b4e4;
+    border-radius: 8px;
+    background: #1a1a1a;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.sync-section .button {
+    width: 100%;
+}
+
+.sync-info {
+    color: #999;
+    font-size: 14px;
+    margin: 10px 0 0 0;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     .details-content {
         flex-direction: column;
