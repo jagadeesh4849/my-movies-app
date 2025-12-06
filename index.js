@@ -3,11 +3,6 @@ const API_URL = 'https://api.themoviedb.org/3/search/movie';
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 
 let favorites = [];
-let userId = localStorage.getItem('userId');
-if (!userId) {
-    userId = 'user_' + Math.random().toString(36).substr(2, 9);
-    localStorage.setItem('userId', userId);
-}
 
 const searchInput = document.getElementById('searchInput');
 const searchBtn = document.getElementById('searchBtn');
