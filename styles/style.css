@@ -153,6 +153,18 @@ body {
     display: grid;
 }
 
+#popular.active {
+    display: grid;
+}
+
+#trendingToday.active {
+    display: grid;
+}
+
+#trendingWeek.active {
+    display: grid;
+}
+
 #favorites.active {
     display: block;
 }
@@ -209,9 +221,15 @@ body {
     display: block;
 }
 
+.movie-card:hover .movie-info {
+    background: #f8f8f8;
+}
+
 .movie-info {
     padding: 16px;
     background: #fff;
+    min-height: 120px;
+    transition: background 0.3s;
 }
 
 .movie-title {
@@ -233,6 +251,20 @@ body {
     font-size: 13px;
     margin: 8px 0 0 0;
     font-weight: 600;
+}
+
+.movie-rating {
+    color: #f5c518;
+    font-size: 14px;
+    margin: 4px 0;
+    font-weight: 700;
+}
+
+.movie-overview {
+    color: #666;
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 8px 0 0 0;
 }
 
 .favorite-btn {

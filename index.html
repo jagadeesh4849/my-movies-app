@@ -28,26 +28,56 @@
                 <option value="zh">Chinese</option>
             </select>
             <button id="searchBtn" class="button">Search</button>
-            <button id="tmdbSearchBtn" class="button tmdb-btn">Search on TMDB</button>
+            <button id="imdbSearchBtn" class="button tmdb-btn">Search on IMDb</button>
         </div>
         <div class="tabs">
-            <button class="tab-btn active" data-tab="results">Search Results</button>
-            <button class="tab-btn" data-tab="favorites">Favorites</button>
+            <button class="tab-btn active" data-tab="popular">What's Popular</button>
+            <button class="tab-btn" data-tab="trendingToday">Today's Trending</button>
+            <button class="tab-btn" data-tab="trendingWeek">This Week's Trending</button>
+            <button class="tab-btn" data-tab="results">Search Results</button>
+            <button class="tab-btn" data-tab="favorites">Watchlist</button>
             <button class="tab-btn" data-tab="sync">⚙️ Sync</button>
         </div>
-        <div id="results" class="movies-grid tab-content active"></div>
+        <div id="popular" class="movies-grid tab-content active"></div>
+        <div id="trendingToday" class="movies-grid tab-content"></div>
+        <div id="trendingWeek" class="movies-grid tab-content"></div>
+        <div id="results" class="movies-grid tab-content"></div>
         <div id="favorites" class="tab-content">
-            <select id="typeFilter" class="type-filter">
-                <option value="">All Types</option>
-                <option value="Action">Action</option>
-                <option value="Comedy">Comedy</option>
-                <option value="Drama">Drama</option>
-                <option value="Horror">Horror</option>
-                <option value="Romance">Romance</option>
-                <option value="Sci-Fi">Sci-Fi</option>
-                <option value="Thriller">Thriller</option>
-                <option value="Other">Other</option>
-            </select>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <select id="typeFilter" class="type-filter">
+                    <option value="">All Types</option>
+                    <option value="Action">Action</option>
+                    <option value="Adventure">Adventure</option>
+                    <option value="Animation">Animation</option>
+                    <option value="Biography">Biography</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Crime">Crime</option>
+                    <option value="Documentary">Documentary</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Horror">Horror</option>
+                    <option value="Musical">Musical</option>
+                    <option value="Mystery">Mystery</option>
+                    <option value="Romance">Romance</option>
+                    <option value="Sci-Fi">Sci-Fi</option>
+                    <option value="Thriller">Thriller</option>
+                    <option value="War">War</option>
+                    <option value="Western">Western</option>
+                    <option value="Other">Other</option>
+                </select>
+                <select id="languageFilterFav" class="type-filter">
+                    <option value="">All Languages</option>
+                    <option value="English">English</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Telugu">Telugu</option>
+                </select>
+                <select id="watchedFilter" class="type-filter">
+                    <option value="">All Movies</option>
+                    <option value="watched">Watched</option>
+                    <option value="unwatched">Yet to Watch</option>
+                </select>
+                <button class="button" onclick="showAddCustomMovie()" style="margin-left: auto;">+ Add to Watchlist</button>
+            </div>
             <div id="favoritesGrid" class="movies-grid"></div>
         </div>
         <div id="sync" class="tab-content">
@@ -57,13 +87,13 @@
                     <h3>Your Sync Code:</h3>
                     <input type="text" id="syncCode" readonly>
                     <button class="button" onclick="copySyncCode()">Copy Code</button>
-                    <p class="sync-info">Copy this code and paste it on your other devices to sync favorites</p>
+                    <p class="sync-info">Copy this code and paste it on your other devices to sync watchlist</p>
                 </div>
                 <div class="sync-section">
                     <h3>Enter Sync Code:</h3>
                     <input type="text" id="enterSyncCode" placeholder="Paste sync code here">
                     <button class="button" onclick="applySyncCode()">Sync Now</button>
-                    <p class="sync-info">Paste the code from your other device to sync favorites</p>
+                    <p class="sync-info">Paste the code from your other device to sync watchlist</p>
                 </div>
             </div>
         </div>
