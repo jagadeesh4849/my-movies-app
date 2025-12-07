@@ -126,7 +126,7 @@ body {
 
 .tab-btn {
     padding: 12px 28px;
-    background: transparent;
+    background: rgba(26, 26, 26, 0.6);
     color: #fff;
     border: none;
     border-radius: 20px 20px 0 0;
@@ -180,6 +180,9 @@ body {
 .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 24px;
+    background: rgba(26, 26, 26, 0.5);
+    padding: 30px;
+    border-radius: 15px;
 }
 
 .type-filter {
@@ -535,7 +538,7 @@ body {
     }
     
     .header .logo {
-        height: 120px;
+        height: 150px;
     }
     
     .container {
@@ -612,7 +615,7 @@ body {
     }
     
     .header .logo {
-        height: 80px;
+        height: 100px;
     }lex: 1;
         min-width: 120px;
     }
