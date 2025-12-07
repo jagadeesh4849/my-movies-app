@@ -534,6 +534,10 @@ body {
         font-size: 2em;
     }
     
+    .header .logo {
+        height: 120px;
+    }
+    
     .container {
         padding: 30px 15px;
     }
@@ -562,6 +566,54 @@ body {
     
     .tab-btn {
         flex: 1;
+        min-width: 120px;
+    }
+    
+    .type-filter {
+        width: 100%;
+    }
+    
+    .modal-content {
+        padding: 24px;
+        min-width: 0;
+    }
+    
+    .modal-buttons {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+    
+    .movie-card img {
+        height: 180px;
+    }
+    
+    .movie-info {
+        padding: 12px;
+    }
+    
+    .movie-title {
+        font-size: 14px;
+    }
+    
+    .movie-year, .movie-type {
+        font-size: 12px;
+    }
+    
+    .favorite-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+    
+    .header .logo {
+        height: 80px;
+    }lex: 1;
         min-width: 120px;
     }
     
