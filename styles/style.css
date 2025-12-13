@@ -80,9 +80,9 @@ body {
 }
 
 .hero-poster {
-    min-width: 120px;
+    min-width: 80px;
     height: 100%;
-    margin-right: 10px;
+    margin-right: 8px;
     opacity: 0.6;
     flex-shrink: 0;
     position: relative;
@@ -119,6 +119,17 @@ body {
 @keyframes scroll {
     0% { transform: translateX(100vw); }
     100% { transform: translateX(-100%); }
+}
+
+@media (max-width: 414px) and (-webkit-min-device-pixel-ratio: 2) {
+    .poster-scroll {
+        animation: scroll 8s linear infinite;
+    }
+    
+    .hero-poster {
+        min-width: 50px;
+        margin-right: 6px;
+    }
 }
 
 .container {
@@ -841,7 +852,15 @@ body {
     }
     
     .header .logo {
-        height: 40px;
+        height: 80px;
+    }
+    
+    .hero-poster {
+        min-width: 60px;
+    }
+    
+    .poster-scroll {
+        animation: scroll 15s linear infinite;
     }
     
     .tab-btn {
