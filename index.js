@@ -242,8 +242,12 @@ function showCustomMovieDetails(id) {
 }
 
 async function showMovieDetails(id) {
-    const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`);
-    const movie = await response.json();
+    const [movieResponse, providersResponse] = await Promise.all([
+        fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`),
+        fetch(`https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${API_KEY}`)
+    ]);
+    const movie = await movieResponse.json();
+    const providers = await providersResponse.json();
     
     const fav = favorites.find(f => f.id === id);
     const isWatched = fav && fav.watched;
@@ -263,6 +267,7 @@ async function showMovieDetails(id) {
                     <p><strong>Rating:</strong> ⭐ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}/10</p>
                     <p><strong>Runtime:</strong> ${movie.runtime ? movie.runtime + ' min' : 'N/A'}</p>
                     <p><strong>Genres:</strong> ${movie.genres ? movie.genres.map(g => g.name).join(', ') : 'N/A'}</p>
+                    ${getStreamingInfo(providers)}
                     <p class="overview"><strong>Overview:</strong><br>${movie.overview || 'No description available.'}</p>
                     ${fav ? `
                         <label class="watched-checkbox">
@@ -497,6 +502,32 @@ function populateHeroPosters() {
             </div>
         `;
     }).join('');
+}
+
+function getStreamingInfo(providers) {
+    const indiaProviders = providers?.results?.IN;
+    if (!indiaProviders) {
+        return '<p><strong>Streaming in India:</strong> Not available</p>';
+    }
+    
+    let streamingHtml = '';
+    
+    if (indiaProviders.flatrate && indiaProviders.flatrate.length > 0) {
+        const platforms = indiaProviders.flatrate.map(p => p.provider_name).join(', ');
+        streamingHtml += `<p><strong>🎬 Stream:</strong> ${platforms}</p>`;
+    }
+    
+    if (indiaProviders.rent && indiaProviders.rent.length > 0) {
+        const platforms = indiaProviders.rent.map(p => p.provider_name).join(', ');
+        streamingHtml += `<p><strong>💰 Rent:</strong> ${platforms}</p>`;
+    }
+    
+    if (indiaProviders.buy && indiaProviders.buy.length > 0) {
+        const platforms = indiaProviders.buy.map(p => p.provider_name).join(', ');
+        streamingHtml += `<p><strong>🛒 Buy:</strong> ${platforms}</p>`;
+    }
+    
+    return streamingHtml || '<p><strong>Streaming in India:</strong> Not available</p>';
 }
 
 function handleFavoriteClick(event, movieId) {
