@@ -121,14 +121,33 @@ body {
     100% { transform: translateX(-100%); }
 }
 
-@media (max-width: 414px) and (-webkit-min-device-pixel-ratio: 2) {
+@media (max-width: 768px) {
+    .header .logo {
+        height: 120px;
+    }
+    
+    .poster-scroll {
+        animation: scroll 10s linear infinite;
+    }
+    
+    .hero-poster {
+        min-width: 60px;
+        margin-right: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header .logo {
+        height: 100px;
+    }
+    
     .poster-scroll {
         animation: scroll 8s linear infinite;
     }
     
     .hero-poster {
         min-width: 50px;
-        margin-right: 6px;
+        margin-right: 5px;
     }
 }
 
