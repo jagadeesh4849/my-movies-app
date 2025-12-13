@@ -479,26 +479,25 @@ async function loadTrendingWeek() {
 }
 
 function populateHeroPosters() {
-    const heroPosters = document.getElementById('heroPosters');
-    if (!heroPosters || favorites.length === 0) {
-        heroPosters.innerHTML = '';
+    const headerPosters = document.getElementById('headerPosters');
+    if (!headerPosters || favorites.length === 0) {
+        headerPosters.innerHTML = '';
         return;
     }
     
     // Create multiple sets for better infinite scroll
     const postersToShow = [...favorites, ...favorites, ...favorites, ...favorites];
     
-    heroPosters.innerHTML = postersToShow.map(movie => {
-        let posterUrl = 'https://via.placeholder.com/120x180?text=No+Image';
+    headerPosters.innerHTML = postersToShow.map(movie => {
+        let posterUrl = 'https://via.placeholder.com/60x90?text=No+Image';
         if (movie.poster_path && movie.poster_path !== 'null') {
             posterUrl = movie.poster_path.startsWith('http') || movie.poster_path.startsWith('data:') ? movie.poster_path : IMG_URL + movie.poster_path;
         }
         const isCustom = movie.isCustom;
         const clickHandler = isCustom ? `showCustomMovieDetails('${movie.id}')` : `showMovieDetails(${movie.id})`;
         return `
-            <div class="hero-poster" onclick="${clickHandler}">
+            <div class="header-poster" onclick="${clickHandler}">
                 <img src="${posterUrl}" alt="${movie.title}">
-                <div class="hero-poster-title">${movie.title}</div>
             </div>
         `;
     }).join('');

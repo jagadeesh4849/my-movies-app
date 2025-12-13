@@ -13,10 +13,13 @@ body {
 .header {
     background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 100%);
     position: relative;
-    padding: 15px 0;
+    padding: 30px;
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255,255,255,0.1);
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    height: 250px;
 }
 
 .header::before {
@@ -32,89 +35,55 @@ body {
 }
 
 .header .logo {
-    height: 220px;
+    height: 190px;
     width: auto;
     object-fit: contain;
     filter: brightness(1.2);
     transition: transform 0.3s ease;
+    flex-shrink: 0;
 }
 
 .header .logo:hover {
     transform: scale(1.05);
 }
 
-.hero-section {
+.header-posters {
+    flex: 1;
+    height: 190px;
+    overflow: hidden;
     position: relative;
-    height: 25vh;
-    background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0c0c0c 100%);
-    overflow: hidden;
 }
 
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('search-bg.jpg') center/cover no-repeat;
-    opacity: 0.3;
-    z-index: 1;
-}
-
-.hero-posters {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.poster-scroll {
+.header-poster-scroll {
     display: flex;
     animation: scroll 40s linear infinite;
     height: 100%;
     width: calc(200% + 20px);
 }
 
-.hero-poster {
-    min-width: 80px;
+.header-poster {
+    min-width: 127px;
     height: 100%;
-    margin-right: 8px;
-    opacity: 0.6;
+    margin-right: 15px;
+    opacity: 0.8;
     flex-shrink: 0;
     position: relative;
     cursor: pointer;
     transition: opacity 0.3s ease;
 }
 
-.hero-poster:hover {
+.header-poster:hover {
     opacity: 1;
 }
 
-.hero-poster img {
+.header-poster img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 4px;
 }
 
-.hero-poster-title {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(transparent, rgba(0,0,0,0.8));
-    color: #fff;
-    padding: 20px 8px 8px;
-    font-size: 11px;
-    font-weight: 600;
-    text-align: center;
-    border-radius: 0 0 4px 4px;
-    line-height: 1.2;
-}
+
 
 @keyframes scroll {
     0% { transform: translateX(100vw); }
@@ -122,31 +91,49 @@ body {
 }
 
 @media (max-width: 768px) {
+    .header {
+        height: 80px;
+        padding: 10px 15px;
+    }
+    
     .header .logo {
-        height: 120px;
+        height: 60px;
     }
     
-    .poster-scroll {
-        animation: scroll 10s linear infinite;
+    .header-posters {
+        height: 60px;
     }
     
-    .hero-poster {
-        min-width: 60px;
+    .header-poster-scroll {
+        animation: scroll 20s linear infinite;
+    }
+    
+    .header-poster {
+        min-width: 40px;
         margin-right: 6px;
     }
 }
 
 @media (max-width: 480px) {
+    .header {
+        height: 70px;
+        padding: 8px 12px;
+    }
+    
     .header .logo {
-        height: 100px;
+        height: 50px;
     }
     
-    .poster-scroll {
-        animation: scroll 8s linear infinite;
+    .header-posters {
+        height: 50px;
     }
     
-    .hero-poster {
-        min-width: 50px;
+    .header-poster-scroll {
+        animation: scroll 15s linear infinite;
+    }
+    
+    .header-poster {
+        min-width: 35px;
         margin-right: 5px;
     }
 }
