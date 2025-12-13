@@ -1,0 +1,45 @@
+{
+  "shortcuts": [
+    {
+      "name": "Search Movies",
+      "icon": "🎬",
+      "url": "https://jagadeesh4849.github.io/my-movies-app/",
+      "actions": [
+        {
+          "type": "ask_input",
+          "prompt": "Enter movie name to search"
+        },
+        {
+          "type": "open_url",
+          "url": "https://jagadeesh4849.github.io/my-movies-app/?search={{input}}"
+        }
+      ]
+    },
+    {
+      "name": "My Movies",
+      "icon": "🍿", 
+      "url": "https://jagadeesh4849.github.io/my-movies-app/",
+      "actions": [
+        {
+          "type": "open_url",
+          "url": "https://jagadeesh4849.github.io/my-movies-app/"
+        }
+      ]
+    },
+    {
+      "name": "Add from IMDb",
+      "icon": "🎭",
+      "url": "https://jagadeesh4849.github.io/my-movies-app/",
+      "actions": [
+        {
+          "type": "ask_input", 
+          "prompt": "Enter IMDb URL or ID"
+        },
+        {
+          "type": "open_url",
+          "url": "https://jagadeesh4849.github.io/my-movies-app/?imdb={{input}}"
+        }
+      ]
+    }
+  ]
+}

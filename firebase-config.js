@@ -16,6 +16,6 @@ const db = firebase.firestore();
 // Get or create user ID
 let userId = localStorage.getItem('userId');
 if (!userId) {
-    userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     localStorage.setItem('userId', userId);
 }

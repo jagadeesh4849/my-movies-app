@@ -5,17 +5,7 @@ const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 let favorites = [];
 let currentMovies = {};
 
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const languageFilter = document.getElementById('languageFilter');
-const resultsDiv = document.getElementById('results');
-const popularDiv = document.getElementById('popular');
-const trendingTodayDiv = document.getElementById('trendingToday');
-const trendingWeekDiv = document.getElementById('trendingWeek');
-const favoritesDiv = document.getElementById('favoritesGrid');
-const typeFilter = document.getElementById('typeFilter');
-const watchedFilter = document.getElementById('watchedFilter');
-const languageFilterFav = document.getElementById('languageFilterFav');
+let searchInput, searchBtn, languageFilter, resultsDiv, popularDiv, trendingTodayDiv, trendingWeekDiv, favoritesDiv, typeFilter, watchedFilter, languageFilterFav;
 
 // Load favorites from Firebase
 async function loadFavorites() {
@@ -33,6 +23,7 @@ async function loadFavorites() {
         favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     }
     displayFavorites();
+    populateHeroPosters();
 }
 
 // Save favorites to Firebase
@@ -51,38 +42,7 @@ async function saveFavorites() {
     }
 }
 
-searchBtn.addEventListener('click', searchMovies);
-searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') searchMovies();
-});
-typeFilter.addEventListener('change', displayFavorites);
-watchedFilter.addEventListener('change', displayFavorites);
-languageFilterFav.addEventListener('change', displayFavorites);
 
-document.getElementById('imdbSearchBtn').addEventListener('click', () => {
-    const query = searchInput.value.trim();
-    if (query) {
-        window.open(`https://www.imdb.com/find?q=${encodeURIComponent(query)}`, '_blank');
-    }
-});
-
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        const tabId = btn.dataset.tab;
-        const tabElement = document.getElementById(tabId);
-        if (tabElement) {
-            tabElement.classList.add('active');
-        }
-        if (tabId === 'popular') loadPopularMovies();
-        if (tabId === 'trendingToday') loadTrendingToday();
-        if (tabId === 'trendingWeek') loadTrendingWeek();
-        if (tabId === 'favorites') displayFavorites();
-        if (tabId === 'sync') displaySyncCode();
-    });
-});
 
 async function searchMovies() {
     const query = searchInput.value.trim();
@@ -123,13 +83,12 @@ function displayMovies(movies, container) {
         return `
             <div class="movie-card ${fav && fav.watched ? 'watched' : ''}" ${detailsClick}>
                 ${fav && fav.watched ? '<div class="watched-badge">✓ Watched</div>' : ''}
-                <button class="favorite-btn" onclick="event.stopPropagation(); toggleFavorite('${movie.id}')">${isFavorite ? '✅' : '➕'}</button>
+                <button class="favorite-btn" onclick="handleFavoriteClick(event, '${movie.id}')">${isFavorite ? '✅' : '➕'}</button>
                 <img src="${posterUrl}" alt="${movie.title}">
                 <div class="movie-info">
                     <h3 class="movie-title">${movie.title}</h3>
                     <p class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</p>
                     ${!isCustom && movie.vote_average ? `<p class="movie-rating">⭐ ${rating}</p>` : ''}
-                    ${!isCustom && overview ? `<p class="movie-overview">${overview}</p>` : ''}
                     ${isFavorite ? `<p class="movie-type">📁 ${fav.type}</p>` : ''}
                 </div>
             </div>
@@ -137,12 +96,24 @@ function displayMovies(movies, container) {
     }).join('');
 }
 
-function toggleFavorite(id) {
+async function toggleFavorite(id) {
+    console.log('toggleFavorite called with id:', id);
     const fav = favorites.find(f => f.id == id);
     if (fav) {
+        console.log('Removing favorite:', fav.title);
         removeFavorite(id);
     } else {
-        const movie = currentMovies[id];
+        let movie = currentMovies[id];
+        if (!movie) {
+            // Fetch movie data from API if not in currentMovies
+            try {
+                const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`);
+                movie = await response.json();
+            } catch (error) {
+                console.error('Error fetching movie data:', error);
+                return;
+            }
+        }
         if (movie) {
             showTypeModal(movie.id, movie.title, movie.poster_path, movie.release_date);
         }
@@ -154,6 +125,7 @@ async function removeFavorite(id) {
     if (index > -1) {
         favorites.splice(index, 1);
         await saveFavorites();
+        populateHeroPosters();
         if (document.getElementById('results').classList.contains('active')) {
             searchMovies();
         } else {
@@ -213,6 +185,7 @@ async function saveWithType() {
     const isCustom = (typeof id === 'string' && id.startsWith('custom_')) || (poster && poster.startsWith('data:'));
     favorites.push({ id, title, poster_path: poster || '', release_date: date || '', type, language, watched: false, isCustom });
     await saveFavorites();
+    populateHeroPosters();
     closeModal();
     pendingMovie = null;
     if (document.getElementById('results').classList.contains('active')) {
@@ -440,6 +413,7 @@ async function saveCustomMovie() {
     }
     
     await saveFavorites();
+    populateHeroPosters();
     closeModal();
     displayFavorites();
 }
@@ -499,8 +473,92 @@ async function loadTrendingWeek() {
     displayMovies(data.results, trendingWeekDiv);
 }
 
-// Initialize app
-setTimeout(() => {
+function populateHeroPosters() {
+    const heroPosters = document.getElementById('heroPosters');
+    if (!heroPosters || favorites.length === 0) {
+        heroPosters.innerHTML = '';
+        return;
+    }
+    
+    // Create multiple sets for better infinite scroll
+    const postersToShow = [...favorites, ...favorites, ...favorites, ...favorites];
+    
+    heroPosters.innerHTML = postersToShow.map(movie => {
+        let posterUrl = 'https://via.placeholder.com/120x180?text=No+Image';
+        if (movie.poster_path && movie.poster_path !== 'null') {
+            posterUrl = movie.poster_path.startsWith('http') || movie.poster_path.startsWith('data:') ? movie.poster_path : IMG_URL + movie.poster_path;
+        }
+        const isCustom = movie.isCustom;
+        const clickHandler = isCustom ? `showCustomMovieDetails('${movie.id}')` : `showMovieDetails(${movie.id})`;
+        return `
+            <div class="hero-poster" onclick="${clickHandler}">
+                <img src="${posterUrl}" alt="${movie.title}">
+                <div class="hero-poster-title">${movie.title}</div>
+            </div>
+        `;
+    }).join('');
+}
+
+function handleFavoriteClick(event, movieId) {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('Favorite button clicked for movie:', movieId);
+    toggleFavorite(movieId);
+}
+
+// Initialize app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize DOM elements
+    searchInput = document.getElementById('searchInput');
+    searchBtn = document.getElementById('searchBtn');
+    languageFilter = document.getElementById('languageFilter');
+    resultsDiv = document.getElementById('results');
+    popularDiv = document.getElementById('popular');
+    trendingTodayDiv = document.getElementById('trendingToday');
+    trendingWeekDiv = document.getElementById('trendingWeek');
+    favoritesDiv = document.getElementById('favoritesGrid');
+    typeFilter = document.getElementById('typeFilter');
+    watchedFilter = document.getElementById('watchedFilter');
+    languageFilterFav = document.getElementById('languageFilterFav');
+    
+    // Add event listeners
+    if (searchBtn) searchBtn.addEventListener('click', searchMovies);
+    if (searchInput) searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') searchMovies();
+    });
+    if (typeFilter) typeFilter.addEventListener('change', displayFavorites);
+    if (watchedFilter) watchedFilter.addEventListener('change', displayFavorites);
+    if (languageFilterFav) languageFilterFav.addEventListener('change', displayFavorites);
+    
+    const imdbBtn = document.getElementById('imdbSearchBtn');
+    if (imdbBtn) {
+        imdbBtn.addEventListener('click', () => {
+            const query = searchInput.value.trim();
+            if (query) {
+                window.open(`https://www.imdb.com/find?q=${encodeURIComponent(query)}`, '_blank');
+            }
+        });
+    }
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            const tabId = btn.dataset.tab;
+            const tabElement = document.getElementById(tabId);
+            if (tabElement) {
+                tabElement.classList.add('active');
+            }
+            if (tabId === 'popular') loadPopularMovies();
+            if (tabId === 'trendingToday') loadTrendingToday();
+            if (tabId === 'trendingWeek') loadTrendingWeek();
+            if (tabId === 'favorites') displayFavorites();
+            if (tabId === 'sync') displaySyncCode();
+        });
+    });
+    
+    // Load initial data
     loadFavorites();
     loadPopularMovies();
-}, 500);
+});
